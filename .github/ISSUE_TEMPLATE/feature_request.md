@@ -1,0 +1,28 @@
+---
+name: Feature request
+about: Ask for a new feature to be implemented in cottas-rs
+title: ''
+labels: feature, needs triage
+assignees: ''
+
+---
+
+## Context
+
+<!-- 
+- Why is this solution needed?
+- What value or benefits will the end-users gain from this change?
+- Is this change a technical improvement? just for internal use, or does it impact users as well?
+-->
+
+## Use case
+
+<!-- Please describe the use case for which you need a solution -->
+
+## Proposed Solution
+
+<!-- Please describe the solution you would like OpenAEV to provide, to solve the problem above. -->
+
+## Additional Information
+
+<!-- Any additional information, including logs or screenshots if you have any. -->
