@@ -16,7 +16,7 @@
 
 ## License :unlock:
 
-**cottas-rs** is available under the **[Apache License 2.0](https://github.com/morph-kgc/cottas-rs/blob/main/LICENSE)**.
+**cottas-rs** is available under the **[Apache License 2.0](https://github.com/arenas-guerrero-julian/cottas-rs/blob/main/LICENSE)**.
 
 ## Author & Contact :mailbox_with_mail:
 
