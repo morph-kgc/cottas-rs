@@ -1,4 +1,4 @@
-pub fn cottas_rs() -> &'static str {
+pub fn rdf2cottas() -> &'static str {
     "Hello from cottas-rs!"
 }
 
@@ -7,7 +7,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_cottas_rs() {
-        assert_eq!(cottas_rs(), "Hello from cottas-rs!");
+    fn test_rdf2cottas() {
+        assert_eq!(rdf2cottas(), "Hello from cottas-rs!");
     }
 }
