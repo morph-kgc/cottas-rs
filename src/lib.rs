@@ -4,7 +4,7 @@ pub mod parser;
 pub mod utils;
 
 pub use duckdb::load_into_duckdb;
-pub use export::export_to_parquet;
+pub use export::export_to_cottas;
 pub use parser::parse_rdf_file;
 pub use utils::build_order_by;
 pub use utils::extract_format;
@@ -13,5 +13,5 @@ pub fn rdf2cottas(rdf_file_path: &str, cottas_file_path: &str, index: &str) {
     let quads = parse_rdf_file(rdf_file_path).unwrap();
     let quad_mode = quads.iter().any(|q| q.3.is_some());
     let conn = load_into_duckdb(&quads);
-    export_to_parquet(&conn, index, cottas_file_path, quad_mode);
+    export_to_cottas(&conn, index, cottas_file_path, quad_mode);
 }
