@@ -14,5 +14,5 @@ pub fn export_to_cottas(conn: &Connection, index: &str, path: &str, quad_mode: b
         select, order_by, path, index
     );
 
-    conn.execute(&query, []).unwrap();
+    conn.execute(query.as_str(), []).unwrap();
 }

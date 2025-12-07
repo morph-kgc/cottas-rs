@@ -1,8 +1,7 @@
 use oxrdfio::{RdfFormat, RdfParser};
 use oxrdf::{Quad, GraphName};
 use std::error::Error;
-use std::fs;
-use std::io;
+use std::{fs, io};
 use std::io::ErrorKind;
 use crate::utils::extract_format;
 
@@ -11,14 +10,13 @@ pub fn parse_rdf_file(
 ) -> Result<Vec<(String, String, String, Option<String>)>, Box<dyn Error>> {
     let data = fs::read(path)?;
 
-    let create_io_error = |msg: String| {
-        Box::from(io::Error::new(ErrorKind::InvalidData, msg))
-    };
-
     // 1. Handle unsupported extension error
     let format_str = extract_format(path)
         .ok_or_else(|| {
-            create_io_error(format!("Unsupported RDF extension for file: {}", path))
+            Box::new(io::Error::new(
+                ErrorKind::InvalidData,
+                format!("Unsupported RDF extension for file: {}", path)
+            )) as Box<dyn Error>
         })?;
 
     let format = match format_str{
@@ -28,7 +26,10 @@ pub fn parse_rdf_file(
         "trig" => RdfFormat::TriG,
         "xml" => RdfFormat::RdfXml,
         _ => {
-            return Err(create_io_error(format!("Unsupported RDF format: {}", format_str)))
+            return Err(Box::new(io::Error::new(
+                ErrorKind::InvalidData,
+                format!("Unsupported RDF format: {}", format_str)
+            )));
         }
     };
 
