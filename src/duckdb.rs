@@ -3,7 +3,7 @@ use duckdb::{Connection, ToSql};
 pub fn load_into_duckdb(
     quads: &[(String, String, String, Option<String>)]
 ) -> Connection {
-    let conn = Connection::open_in_memory().unwrap();
+    let conn = connection_in_memory();
 
     // Create table
     conn.execute(
@@ -25,4 +25,8 @@ pub fn load_into_duckdb(
     }
 
     conn
+}
+
+pub fn connection_in_memory() -> Connection {
+    Connection::open_in_memory().unwrap()
 }
