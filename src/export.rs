@@ -9,7 +9,6 @@ pub fn export_to_cottas(conn: &Connection, index: &str, path: &str, quad_mode: b
         "SELECT DISTINCT s, p, o FROM quads"
     };
 
-    // DuckDB solo acepta un string simple en kv_metadata
     let kv_metadata = format!("index={}", index);
 
     let query = format!(
