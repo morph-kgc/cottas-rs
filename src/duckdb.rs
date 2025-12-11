@@ -1,3 +1,4 @@
+use std::error::Error;
 use duckdb::{Connection, ToSql};
 
 pub fn load_into_duckdb(
@@ -29,4 +30,18 @@ pub fn load_into_duckdb(
 
 pub fn connection_in_memory() -> Connection {
     Connection::open_in_memory().unwrap()
+}
+
+pub fn has_column(conn: &Connection, cottas_file_path: &str, column: &str) -> Result<bool, Box<dyn Error>> {
+    let mut stmt = conn.prepare("SELECT name FROM PARQUET_SCHEMA(?)")?;
+    let mut rows = stmt.query([cottas_file_path])?;
+
+    while let Some(row) = rows.next()? {
+        let name: String = row.get(0)?;
+        if name == column {
+            return Ok(true);
+        }
+    }
+
+    Ok(false)
 }

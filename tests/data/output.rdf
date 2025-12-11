@@ -1,0 +1,3 @@
+<http://example.org/Charlie> <http://example.org/knows> <http://example.org/Alice> .
+<http://example.org/Bob> <http://example.org/knows> <http://example.org/Charlie> .
+<http://example.org/Alice> <http://example.org/knows> <http://example.org/Bob> .
