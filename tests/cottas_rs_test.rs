@@ -12,7 +12,9 @@ fn test_rdf2cottas() {
     // Check that target file exists
     assert!(std::path::Path::new(target_file).exists());
 
-    let df = ParquetReader::new(target_file).finish().unwrap();
+    let file = std::fs::File::open(target_file).unwrap();
+    let df = ParquetReader::new(file).finish().unwrap();
+
     assert!(df.height() > 0, "The file .cottas is empty");
     println!("{:?}", df.head(Some(5)));
 }
