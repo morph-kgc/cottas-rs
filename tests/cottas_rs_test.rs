@@ -1,4 +1,5 @@
 use cottas_rs::*;
+use polars::prelude::*;
 
 #[test]
 fn test_rdf2cottas() {
@@ -11,8 +12,7 @@ fn test_rdf2cottas() {
     // Check that target file exists
     assert!(std::path::Path::new(target_file).exists());
 
-    let df = ParquetReader::from_path(target_file)?
-        .finish()?;
+    let df = ParquetReader::new(target_file).finish().unwrap();
     assert!(df.height() > 0, "The file .cottas is empty");
     println!("{:?}", df.head(Some(5)));
 }
