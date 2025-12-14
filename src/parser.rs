@@ -1,9 +1,9 @@
-use oxrdfio::{RdfFormat, RdfParser};
-use oxrdf::{Quad, GraphName};
-use std::error::Error;
-use std::{fs, io};
-use std::io::ErrorKind;
 use crate::utils::extract_format;
+use oxrdf::{GraphName, Quad};
+use oxrdfio::{RdfFormat, RdfParser};
+use std::error::Error;
+use std::io::ErrorKind;
+use std::{fs, io};
 
 pub fn parse_rdf_file(
     path: &str,
@@ -11,15 +11,14 @@ pub fn parse_rdf_file(
     let data = fs::read(path)?;
 
     // 1. Handle unsupported extension error
-    let format_str = extract_format(path)
-        .ok_or_else(|| {
-            Box::new(io::Error::new(
-                ErrorKind::InvalidData,
-                format!("Unsupported RDF extension for file: {}", path)
-            )) as Box<dyn Error>
-        })?;
+    let format_str = extract_format(path).ok_or_else(|| {
+        Box::new(io::Error::new(
+            ErrorKind::InvalidData,
+            format!("Unsupported RDF extension for file: {}", path),
+        )) as Box<dyn Error>
+    })?;
 
-    let format = match format_str{
+    let format = match format_str {
         "nt" => RdfFormat::NTriples,
         "nq" => RdfFormat::NQuads,
         "turtle" => RdfFormat::Turtle,
@@ -28,7 +27,7 @@ pub fn parse_rdf_file(
         _ => {
             return Err(Box::new(io::Error::new(
                 ErrorKind::InvalidData,
-                format!("Unsupported RDF format: {}", format_str)
+                format!("Unsupported RDF format: {}", format_str),
             )));
         }
     };
@@ -42,7 +41,7 @@ pub fn parse_rdf_file(
         let g: Option<String> = match &quad.graph_name {
             GraphName::NamedNode(ref node) => Some(node.to_string()),
             GraphName::BlankNode(node) => Some(format!("_:{}", node)),
-            GraphName::DefaultGraph => None
+            GraphName::DefaultGraph => None,
         };
 
         quads_vec.push((

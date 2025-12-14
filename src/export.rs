@@ -1,7 +1,7 @@
+use duckdb::Connection;
 use std::error::Error;
 use std::fs::File;
 use std::io::Write;
-use duckdb::Connection;
 
 pub fn export_to_cottas(conn: &Connection, index: &str, path: &str, quad_mode: bool) {
     //let order_by = build_order_by(index);
@@ -10,7 +10,6 @@ pub fn export_to_cottas(conn: &Connection, index: &str, path: &str, quad_mode: b
     } else {
         "SELECT DISTINCT s, p, o FROM quads"
     };
-
 
     let query = format!(
         "COPY ({}) TO '{}' (FORMAT PARQUET, COMPRESSION ZSTD, COMPRESSION_LEVEL 22, PARQUET_VERSION 'V2')",
@@ -26,8 +25,15 @@ pub fn write_quads_to_file(
     has_named_graph: bool,
     file: &mut File,
 ) -> Result<(), Box<dyn Error>> {
-    let select = if has_named_graph { "s, p, o, g" } else { "s, p, o" };
-    let query = format!("SELECT {} FROM PARQUET_SCAN('{}')", select, cottas_file_path);
+    let select = if has_named_graph {
+        "s, p, o, g"
+    } else {
+        "s, p, o"
+    };
+    let query = format!(
+        "SELECT {} FROM PARQUET_SCAN('{}')",
+        select, cottas_file_path
+    );
 
     let mut stmt = conn.prepare(&query)?;
     let mut rows = stmt.query([])?;
@@ -54,5 +60,3 @@ pub fn write_quads_to_file(
 
     Ok(())
 }
-
-

@@ -29,6 +29,8 @@ fn test_cottas2rdf() {
     assert!(std::path::Path::new(rdf_file).exists());
 
     let content = std::fs::read_to_string(rdf_file).unwrap();
-    println!("{}", &content.lines().take(5).collect::<Vec<_>>().join("\n"));
+    println!(
+        "{}",
+        &content.lines().take(5).collect::<Vec<_>>().join("\n")
+    );
 }
-
