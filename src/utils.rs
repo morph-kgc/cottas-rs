@@ -42,3 +42,7 @@ pub fn build_order_by(index: &str) -> String {
         .collect::<Vec<_>>()
         .join(", ")
 }
+
+pub fn translate_triple_pattern(cottas_file_path: &str, triple_pattern: &str)-> String {
+    todo!()
+}

@@ -1,5 +1,6 @@
 use std::error::Error;
 use duckdb::{Connection, ToSql};
+use crate::utils::translate_triple_pattern;
 
 pub fn load_into_duckdb(
     quads: &[(String, String, String, Option<String>)]
@@ -44,4 +45,9 @@ pub fn has_column(conn: &Connection, cottas_file_path: &str, column: &str) -> Re
     }
 
     Ok(false)
+}
+
+pub fn search_in_duckdb(cottas_file_path: &str, triple_pattern: &str) -> Result<bool, Box<dyn Error>>{
+    let conn = connection_in_memory();
+    conn.execute(translate_triple_pattern(cottas_file_path, triple_pattern)).fetchall()
 }
