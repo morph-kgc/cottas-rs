@@ -3,7 +3,7 @@ use std::error::Error;
 use std::fs::File;
 use std::io::Write;
 
-pub fn export_to_cottas(conn: &Connection, index: &str, path: &str, quad_mode: bool) {
+pub fn export_to_cottas(conn: &Connection, _index: &str, path: &str, quad_mode: bool) {
     //let order_by = build_order_by(index);
     let select = if quad_mode {
         "SELECT DISTINCT s, p, o, g FROM quads"
