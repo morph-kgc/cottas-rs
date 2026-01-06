@@ -37,6 +37,5 @@ pub fn search(
     cottas_file_path: &str,
     triple_pattern: &str,
 ) -> Result<Vec<Vec<String>>, Box<dyn Error>> {
-    search_in_duckdb(cottas_file_path, triple_pattern);
-    Ok(())
+    search_in_duckdb(cottas_file_path, triple_pattern)
 }
