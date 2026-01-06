@@ -56,7 +56,6 @@ fn test_search_all_triples() {
     }
 }
 
-
 #[test]
 fn test_search_by_predicate() {
     let cottas_file = "tests/data/example.cottas";
