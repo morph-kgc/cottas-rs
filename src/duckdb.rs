@@ -124,7 +124,7 @@ pub fn search_in_duckdb(
     Ok(results?)
 }
 
-pub fn cat(
+pub fn cat_duckdb(
     cottas_file_paths: &str,
     cottas_cat_file_path: &str,
     index: Option<&str>,

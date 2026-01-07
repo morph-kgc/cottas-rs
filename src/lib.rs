@@ -3,7 +3,7 @@ pub mod export;
 pub mod parser;
 pub mod utils;
 
-pub use duckdb::{connection_in_memory, has_column, load_into_duckdb, search_in_duckdb};
+pub use duckdb::{connection_in_memory, has_column, load_into_duckdb, search_in_duckdb, cat_duckdb};
 pub use export::{export_to_cottas, write_quads_to_file};
 pub use parser::parse_rdf_file;
 use std::error::Error;
@@ -44,12 +44,12 @@ pub fn cat(
     cottas_file_paths: &str,
     cottas_cat_file_path: &str,
     index: Option<&str>,
-    remove_input_files: Option<&bool>,
+    remove_input_files: Option<&bool>
 ) -> Result<(), Box<dyn Error>> {
-    cat(
+    cat_duckdb(
         cottas_file_paths,
         cottas_cat_file_path,
         index,
-        remove_input_files,
+        remove_input_files
     )
 }
