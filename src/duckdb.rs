@@ -1,6 +1,9 @@
-use crate::parser::*;
+pub use crate::parser::*;
+pub use crate::utils::is_valid_index;
 use duckdb::{Connection, ToSql};
 use std::error::Error;
+use std::fs;
+use crate::utils::build_order_by;
 
 pub fn load_into_duckdb(quads: &[(String, String, String, Option<String>)]) -> Connection {
     let conn = connection_in_memory();
@@ -121,3 +124,59 @@ pub fn search_in_duckdb(
     let results: Result<Vec<Vec<String>>, duckdb::Error> = rows.collect();
     Ok(results?)
 }
+
+pub fn cat_duckdb(
+    cottas_file_paths: &[String],
+    cottas_cat_file_path: &str,
+    index: &str,
+    remove_input_files: bool,
+) -> Result<(), Box<dyn Error>> {
+    if !is_valid_index(index) {
+        eprintln!("Index `{}` is not valid.", index);
+        return Ok(());
+    }
+
+    // Join file paths for DuckDB PARQUET_SCAN
+    let parquet_files = cottas_file_paths
+        .iter()
+        .map(|p| format!("'{}'", p))
+        .collect::<Vec<_>>()
+        .join(", ");
+
+    // Open in-memory DuckDB connection
+    let conn = Connection::open_in_memory()?;
+
+    // Use build_order_by (Python-style: quad_mode = false)
+    let order_by = build_order_by(index, false);
+
+    // Build KV_METADATA index
+    let index_metadata = index.to_lowercase();
+
+    // Build the COPY SQL query
+    let cat_query = format!(
+        "COPY (SELECT DISTINCT s, p, o FROM PARQUET_SCAN([{}], union_by_name = true) {}) TO '{}' (
+            FORMAT PARQUET,
+            COMPRESSION ZSTD,
+            COMPRESSION_LEVEL 22,
+            PARQUET_VERSION v2,
+            KV_METADATA {{index: '{}'}}
+        )",
+        parquet_files,
+        order_by,
+        cottas_cat_file_path,
+        index_metadata
+    );
+
+    // Execute query
+    conn.execute(&cat_query, [])?;
+
+    // Optionally remove input files
+    if remove_input_files {
+        for file in cottas_file_paths {
+            fs::remove_file(file)?;
+        }
+    }
+
+    Ok(())
+}
+

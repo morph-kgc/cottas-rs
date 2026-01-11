@@ -3,12 +3,11 @@ pub mod export;
 pub mod parser;
 pub mod utils;
 
-pub use duckdb::{connection_in_memory, has_column, load_into_duckdb, search_in_duckdb};
+pub use duckdb::{connection_in_memory, has_column, load_into_duckdb, search_in_duckdb, cat_duckdb};
 pub use export::{export_to_cottas, write_quads_to_file};
 pub use parser::parse_rdf_file;
 use std::error::Error;
 use std::fs::File;
-pub use utils::build_order_by;
 pub use utils::extract_format;
 
 pub fn rdf2cottas(
@@ -38,4 +37,21 @@ pub fn search(
     triple_pattern: &str,
 ) -> Result<Vec<Vec<String>>, Box<dyn Error>> {
     search_in_duckdb(cottas_file_path, triple_pattern)
+}
+
+pub fn cat(
+    cottas_file_paths: &[String],
+    cottas_cat_file_path: &str,
+    index: Option<&str>,
+    remove_input_files: Option<bool>
+) -> Result<(), Box<dyn Error>> {
+    let index = index.unwrap_or("spo");
+    let remove_input_files = remove_input_files.unwrap_or(false);
+
+    cat_duckdb(
+        cottas_file_paths,
+        cottas_cat_file_path,
+        index,
+        remove_input_files
+    )
 }

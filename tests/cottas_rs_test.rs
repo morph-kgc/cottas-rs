@@ -1,7 +1,8 @@
+use std::fs;
 use cottas_rs::*;
-use polars::polars_utils::parma::raw::Key;
 use polars::prelude::*;
 use std::path::Path;
+use tempfile::TempDir;
 
 #[test]
 fn test_rdf2cottas() {
@@ -167,4 +168,61 @@ fn test_search_no_results() {
         0,
         "Should find no results for non-existent predicate"
     );
+}
+
+#[test]
+fn test_cat_cottas() {
+    let input_files = vec![
+        "tests/data/example.cottas".to_string(),
+        "tests/data/example.cottas".to_string(),
+    ];
+    let output_file = "tests/data/merged.cottas";
+
+    // Call the cat function
+    cat(&input_files[..], output_file, Some("spo"), Some(false)).unwrap();
+
+    // Check output exists
+    assert!(Path::new(output_file).exists());
+
+    // Optional: check number of rows
+    let file = std::fs::File::open(output_file).unwrap();
+    let df = ParquetReader::new(file).finish().unwrap();
+    assert!(df.height() > 0, "Merged .cottas file is empty");
+
+    println!("{:?}", df.head(Some(5)));
+}
+
+#[test]
+fn test_cat_invalid_index() {
+    let input_files = vec!["tests/data/example.cottas".to_string()];
+    let output_file = "tests/data/merged_invalid.cottas";
+
+    // Pass invalid index
+    let result = cat(&input_files[..], output_file, Some("invalid"), Some(false));
+
+    // Should succeed but print an error
+    assert!(result.is_ok());
+}
+
+#[test]
+fn test_cat_remove_input_files() {
+    // Create temporary files
+    let temp_dir = TempDir::new().unwrap();
+    let file1 = temp_dir.path().join("file1.cottas");
+    fs::copy("tests/data/example.cottas", &file1).unwrap();
+
+    let output_file = temp_dir.path().join("merged.cottas");
+
+    let input_files = vec![
+        file1.to_string_lossy().to_string(),
+    ];
+
+    cat(&input_files, &output_file.to_string_lossy(), None, Some(true))
+        .unwrap();
+
+    // Input files should be removed
+    assert!(!file1.exists());
+
+    // Output file should exist
+    assert!(output_file.exists());
 }
