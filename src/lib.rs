@@ -6,6 +6,7 @@ pub mod utils;
 pub use duckdb::{connection_in_memory, has_column, load_into_duckdb, search_in_duckdb, cat_duckdb};
 pub use export::{export_to_cottas, write_quads_to_file};
 pub use parser::parse_rdf_file;
+use tempfile::tempdir;
 use std::error::Error;
 use std::fs::File;
 pub use utils::extract_format;

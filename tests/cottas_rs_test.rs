@@ -167,3 +167,64 @@ fn test_search_no_results() {
         "Should find no results for non-existent predicate"
     );
 }
+
+#[test]
+fn test_cat_cottas() {
+    let input_files = vec![
+        "tests/data/example.cottas".to_string(),
+        "tests/data/example.cottas".to_string(),
+    ];
+    let output_file = "tests/data/merged.cottas";
+
+    // Call the cat function
+    cat(&input_files[..], output_file, Some("spo"), Some(false)).unwrap();
+
+    // Check output exists
+    assert!(Path::new().exists());
+
+    // Optional: check number of rows
+    let file = std::fs::File::open(output_file).unwrap();
+    let df = ParquetReader::new(file).finish().unwrap();
+    assert!(df.height() > 0, "Merged .cottas file is empty");
+
+    println!("{:?}", df.head(Some(5)));
+}
+
+#[test]
+fn test_cat_invalid_index() {
+    let input_files = vec!["tests/data/example.cottas".to_string()];
+    let output_file = "tests/data/merged_invalid.cottas";
+
+    // Pass invalid index
+    let result = cat(&input_files[..], output_file, Some("invalid"), Some(false));
+
+    // Should succeed but print an error
+    assert!(result.is_ok());
+}
+
+#[test]
+fn test_cat_remove_input_files() {
+    // Create temporary files
+    let temp_dir = tempdir::TempDir::new("cottas_test").unwrap();
+    let file1 = temp_dir.path().join("file1.cottas");
+    let file2 = temp_dir.path().join("file2.cottas");
+    std::fs::File::create(&file1).unwrap();
+    std::fs::File::create(&file2).unwrap();
+
+    let output_file = temp_dir.path().join("merged.cottas");
+
+    let input_files = vec![
+        file1.to_string_lossy().to_string(),
+        file2.to_string_lossy().to_string(),
+    ];
+
+    cat(&input_files, &output_file.to_string_lossy(), None, Some(true))
+        .unwrap();
+
+    // Input files should be removed
+    assert!(!file1.exists());
+    assert!(!file2.exists());
+
+    // Output file should exist
+    assert!(output_file.exists());
+}
