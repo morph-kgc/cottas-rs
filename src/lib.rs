@@ -40,11 +40,14 @@ pub fn search(
 }
 
 pub fn cat(
-    cottas_file_paths: &str,
+    cottas_file_paths: &[String],
     cottas_cat_file_path: &str,
     index: Option<&str>,
-    remove_input_files: Option<&bool>
+    remove_input_files: Option<bool>
 ) -> Result<(), Box<dyn Error>> {
+    let index = index.unwrap_or("spo");
+    let remove_input_files = remove_input_files.unwrap_or(false);
+
     cat_duckdb(
         cottas_file_paths,
         cottas_cat_file_path,
