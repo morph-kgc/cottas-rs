@@ -25,20 +25,24 @@ pub fn is_valid_index(index: &str) -> bool {
     }
 }
 
-pub fn build_order_by(index: &str) -> String {
+pub fn build_order_by(index: &str, quad_mode: bool) -> String {
     if !is_valid_index(index) {
         panic!("Invalid index: {}", index);
     }
 
-    index
+    let mut cols: Vec<&str> = index
         .chars()
         .filter_map(|c| match c {
             's' => Some("s"),
             'p' => Some("p"),
             'o' => Some("o"),
-            'g' => Some("g"),
             _ => None,
         })
-        .collect::<Vec<_>>()
-        .join(", ")
+        .collect();
+
+    if quad_mode {
+        cols.push("g");
+    }
+
+    format!("ORDER BY {}", cols.join(", "))
 }

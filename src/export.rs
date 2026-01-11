@@ -2,8 +2,9 @@ use duckdb::Connection;
 use std::error::Error;
 use std::fs::File;
 use std::io::Write;
+use crate::utils::build_order_by;
 
-pub fn export_to_cottas(conn: &Connection, _index: &str, path: &str, quad_mode: bool) {
+pub fn export_to_cottas(conn: &Connection, index: &str, path: &str, quad_mode: bool) {
     //let order_by = build_order_by(index);
     let select = if quad_mode {
         "SELECT DISTINCT s, p, o, g FROM quads"
@@ -11,9 +12,11 @@ pub fn export_to_cottas(conn: &Connection, _index: &str, path: &str, quad_mode: 
         "SELECT DISTINCT s, p, o FROM quads"
     };
 
+    let order_by = build_order_by(index, quad_mode);
+
     let query = format!(
-        "COPY ({}) TO '{}' (FORMAT PARQUET, COMPRESSION ZSTD, COMPRESSION_LEVEL 22, PARQUET_VERSION 'V2')",
-        select, path
+        "COPY ({} {}) TO '{}' (FORMAT PARQUET, COMPRESSION ZSTD, COMPRESSION_LEVEL 22, PARQUET_VERSION 'V2')",
+        select, order_by, path
     );
 
     conn.execute(query.as_str(), []).unwrap();

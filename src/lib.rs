@@ -8,7 +8,6 @@ pub use export::{export_to_cottas, write_quads_to_file};
 pub use parser::parse_rdf_file;
 use std::error::Error;
 use std::fs::File;
-pub use utils::build_order_by;
 pub use utils::extract_format;
 
 pub fn rdf2cottas(
