@@ -232,13 +232,20 @@ fn test_cat_remove_input_files() {
 
 #[test]
 fn test_diff_cottas() {
-    let source_file = "tests/data/example1.ttl";
-    let target_file = "tests/data/example1.cottas";
+    let source_file1 = "tests/data/example1.ttl";
+    let target_file1 = "tests/data/example1.cottas";
     let index = "spo";
 
-    rdf2cottas(source_file, target_file, index).unwrap();
-    let file1 = "tests/data/example.cottas";
-    let file2 = "tests/data/example1.cottas";
+    rdf2cottas(source_file1, target_file1, index).unwrap();
+
+    let source_file2 = "tests/data/example2.ttl";
+    let target_file2 = "tests/data/example2.cottas";
+    let index = "spo";
+
+    rdf2cottas(source_file2, target_file2, index).unwrap();
+
+    let file1 = "tests/data/example1.cottas";
+    let file2 = "tests/data/example2.cottas";
     let output_file = "tests/data/diff_output.cottas";
 
     // Call the diff function
