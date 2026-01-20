@@ -2,6 +2,10 @@
 name = "cottas-rs"
 version = "0.1.0"
 edition = "2021"
+description = "My crate does something useful"
+license = "Apache License 2.0. See LICENSE file for details."
+repository = "https://github.com/cottas-rdf/cottas-rs"
+readme = "README.md"
 
 [dependencies]
 duckdb = { version = "1.4.2", features = ["bundled"] }
@@ -11,3 +15,4 @@ polars = { version = "0.52", features = ["parquet"] }
 tempfile = "3.6"
 serde = { version = "1.0.228", features = ["derive"] }
 chrono = "0.4.42"
+clap = { version = "4.5.23", features = ["derive"] }
