@@ -4,7 +4,6 @@ pub mod parser;
 pub mod utils;
 
 use crate::duckdb::{diff_duckdb, info_duckdb, verify_duckdb, CottasInfo};
-use ::duckdb::arrow::compute::or_kleene;
 pub use duckdb::{
     cat_duckdb, connection_in_memory, has_column, load_into_duckdb, search_in_duckdb,
 };
