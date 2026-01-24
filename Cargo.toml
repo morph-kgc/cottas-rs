@@ -2,10 +2,14 @@
 name = "cottas-rs"
 version = "0.1.0"
 edition = "2021"
+authors = ["Stephanya Casanova Marroquin <stephanya.casanova@gmail.com>"]
 description = "cottas-rs is a library for working with compressed RDF files in the COTTAS format. COTTAS stores triples as a triple table in Apache Parquet. It is built on top of DuckDB and provides an HDT-like interface."
-license = "Apache License 2.0. See LICENSE file for details."
+categories = ["database", "data-structures", "parsing"]
+keywords = ["rdf", "parquet", "duckdb", "cottas"]
+license = "Apache-2.0. See LICENSE file for details."
 repository = "https://github.com/cottas-rdf/cottas-rs"
 readme = "README.md"
+rust-version = "1.65"
 
 [dependencies]
 duckdb = { version = "1.4.2", features = ["bundled"] }
