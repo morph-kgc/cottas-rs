@@ -1,3 +1,5 @@
+//! RDF parser utilities for reading and handling triple/quad patterns.
+
 use crate::utils::extract_format;
 use oxrdf::{GraphName, Quad};
 use oxrdfio::{RdfFormat, RdfParser};
@@ -5,6 +7,20 @@ use std::error::Error;
 use std::io::ErrorKind;
 use std::{fs, io};
 
+/// Parses an RDF file and returns its contents as a vector of tuples.
+///
+/// # Arguments
+///
+/// * `path` - The file path to the RDF file.
+///
+/// # Returns
+///
+/// * `Ok(Vec<(String, String, String, Option<String>)>)` - A vector of subject, predicate, object, and optional graph name.
+/// * `Err(Box<dyn Error>)` - If the file cannot be read or parsed.
+///
+/// # Errors
+///
+/// Returns an error if the file extension is unsupported or if parsing fails.
 pub fn parse_rdf_file(
     path: &str,
 ) -> Result<Vec<(String, String, String, Option<String>)>, Box<dyn Error>> {
@@ -58,9 +74,19 @@ pub fn parse_rdf_file(
 /// Position indices for triple/quad patterns
 pub const I_POS: [&str; 4] = ["s", "p", "o", "g"];
 
-/// Parse a triple pattern string and return its components
-/// Input: "?s <http://pred> ?o" or "?s <http://pred> ?o <http://graph>"
-/// Returns: Vec of terms (3 for triple, 4 for quad)
+/// Parses a triple or quad pattern string and returns its components.
+///
+/// # Arguments
+///
+/// * `tp_str` - The triple or quad pattern as a string (e.g., "?s <http://pred> ?o" or "?s <http://pred> ?o <http://graph>").
+///
+/// # Returns
+///
+/// * `Vec<String>` - A vector containing the terms (3 for triple, 4 for quad).
+///
+/// # Panics
+///
+/// Panics if the input string has fewer than 3 terms.
 pub fn parse_tp(tp_str: &str) -> Vec<String> {
     let parts: Vec<&str> = tp_str.split_whitespace().collect();
 
