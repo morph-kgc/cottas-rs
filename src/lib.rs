@@ -13,7 +13,7 @@ use std::error::Error;
 use std::fs::File;
 pub use utils::extract_format;
 
-//! Main library API for RDF <-> Cottas conversion and manipulation.
+//! Main library API for COTTAS-RS based on PYCOTTAS.
 //!
 //! # Modules
 //! - `duckdb`: DuckDB integration and utilities.
