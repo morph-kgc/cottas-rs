@@ -1,9 +1,19 @@
+//! Export utilities for writing query results to Cottas and files.
+
 use crate::utils::build_order_by;
 use duckdb::Connection;
 use std::error::Error;
 use std::fs::File;
 use std::io::Write;
 
+/// Exports query results from DuckDB to a Cottas (Parquet) file.
+///
+/// # Arguments
+///
+/// * `conn` - The DuckDB connection.
+/// * `index` - The index string used for ordering.
+/// * `path` - The output file path.
+/// * `quad_mode` - If true, exports quads; otherwise, exports triples.
 pub fn export_to_cottas(conn: &Connection, index: &str, path: &str, quad_mode: bool) {
     let select = if quad_mode {
         "SELECT DISTINCT s, p, o, g FROM quads"
@@ -21,6 +31,18 @@ pub fn export_to_cottas(conn: &Connection, index: &str, path: &str, quad_mode: b
     conn.execute(query.as_str(), []).unwrap();
 }
 
+/// Writes quads or triples from a Cottas (Parquet) file to a text file.
+///
+/// # Arguments
+///
+/// * `conn` - The DuckDB connection.
+/// * `cottas_file_path` - Path to the Cottas (Parquet) file.
+/// * `has_named_graph` - If true, expects quads; otherwise, triples.
+/// * `file` - Mutable reference to the output file.
+///
+/// # Errors
+///
+/// Returns an error if reading or writing fails.
 pub fn write_quads_to_file(
     conn: &Connection,
     cottas_file_path: &str,
