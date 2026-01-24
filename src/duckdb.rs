@@ -1,3 +1,5 @@
+//! DuckDB integration utilities for Cottas: loading, querying, and managing Parquet-based RDF data.
+
 pub use crate::parser::*;
 use crate::utils::build_order_by;
 pub use crate::utils::is_valid_index;
@@ -8,6 +10,15 @@ use std::collections::HashSet;
 use std::error::Error;
 use std::fs;
 
+/// Loads a vector of RDF quads into an in-memory DuckDB database.
+///
+/// # Arguments
+///
+/// * `quads` - A slice of tuples representing subject, predicate, object, and optional graph.
+///
+/// # Returns
+///
+/// * `Connection` - An in-memory DuckDB connection with the loaded data.
 pub fn load_into_duckdb(quads: &[(String, String, String, Option<String>)]) -> Connection {
     let conn = connection_in_memory();
 
@@ -32,10 +43,26 @@ pub fn load_into_duckdb(quads: &[(String, String, String, Option<String>)]) -> C
     conn
 }
 
+/// Creates a new in-memory DuckDB connection.
+///
+/// # Returns
+///
+/// * `Connection` - An in-memory DuckDB connection.
 pub fn connection_in_memory() -> Connection {
     Connection::open_in_memory().unwrap()
 }
 
+/// Checks if a Parquet file contains a specific column.
+///
+/// # Arguments
+///
+/// * `conn` - The DuckDB connection.
+/// * `cottas_file_path` - Path to the Parquet file.
+/// * `column` - The column name to check.
+///
+/// # Returns
+///
+/// * `Ok(true)` if the column exists, `Ok(false)` otherwise.
 pub fn has_column(
     conn: &Connection,
     cottas_file_path: &str,
@@ -54,6 +81,16 @@ pub fn has_column(
     Ok(false)
 }
 
+/// Translates a triple or quad pattern into a DuckDB SQL query.
+///
+/// # Arguments
+///
+/// * `cottas_file_path` - Path to the Parquet file.
+/// * `triple_pattern` - The triple or quad pattern as a string.
+///
+/// # Returns
+///
+/// * `String` - The generated SQL query.
 pub fn translate_triple_pattern(cottas_file_path: &str, triple_pattern: &str) -> String {
     // Parse the triple pattern
     let tp_tuple = parse_tp(triple_pattern);
@@ -97,6 +134,16 @@ pub fn translate_triple_pattern(cottas_file_path: &str, triple_pattern: &str) ->
     query
 }
 
+/// Searches for matches of a triple or quad pattern in a Parquet file using DuckDB.
+///
+/// # Arguments
+///
+/// * `cottas_file_path` - Path to the Parquet file.
+/// * `triple_pattern` - The triple or quad pattern as a string.
+///
+/// # Returns
+///
+/// * `Ok(Vec<Vec<String>>)` - Query results as vectors of strings.
 pub fn search_in_duckdb(
     cottas_file_path: &str,
     triple_pattern: &str,
@@ -128,6 +175,18 @@ pub fn search_in_duckdb(
     Ok(results?)
 }
 
+/// Concatenates multiple Parquet files into a single file, optionally removing the inputs.
+///
+/// # Arguments
+///
+/// * `cottas_file_paths` - Slice of input file paths.
+/// * `cottas_cat_file_path` - Output file path.
+/// * `index` - Index string for ordering.
+/// * `remove_input_files` - If true, deletes input files after concatenation.
+///
+/// # Returns
+///
+/// * `Ok(())` on success.
 pub fn cat_duckdb(
     cottas_file_paths: &[String],
     cottas_cat_file_path: &str,
@@ -180,6 +239,19 @@ pub fn cat_duckdb(
     Ok(())
 }
 
+/// Computes the difference between two Parquet files and writes the result to a new file.
+///
+/// # Arguments
+///
+/// * `cottas_file_1_path` - First input file path.
+/// * `cottas_file_2_path` - Second input file path.
+/// * `cottas_diff_file_path` - Output file path.
+/// * `index` - Index string for ordering.
+/// * `remove_input_files` - If true, deletes input files after diff.
+///
+/// # Returns
+///
+/// * `Ok(())` on success.
 pub fn diff_duckdb(
     cottas_file_1_path: &str,
     cottas_file_2_path: &str,
@@ -229,6 +301,15 @@ pub fn diff_duckdb(
     Ok(())
 }
 
+/// Verifies that a Parquet file has the required columns for a Cottas file.
+///
+/// # Arguments
+///
+/// * `cottas_file_path` - Path to the Parquet file.
+///
+/// # Returns
+///
+/// * `Ok(true)` if valid, `Ok(false)` otherwise.
 pub fn verify_duckdb(cottas_file_path: &str) -> Result<bool, Box<dyn Error>> {
     let conn = connection_in_memory();
 
@@ -264,20 +345,40 @@ pub fn verify_duckdb(cottas_file_path: &str) -> Result<bool, Box<dyn Error>> {
     Ok(is_valid)
 }
 
+/// Metadata about a Cottas Parquet file.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CottasInfo {
+    /// Index string (e.g., "spo").
     pub index: String,
+    /// Number of triples.
     pub triples: i64,
+    /// Number of row groups.
     pub triples_groups: i64,
+    /// Number of distinct properties.
     pub properties: i64,
+    /// Number of distinct subjects.
     pub distinct_subjects: i64,
+    /// Number of distinct objects.
     pub distinct_objects: i64,
+    /// File creation or modification timestamp (RFC3339).
     pub issued: String,
+    /// File size in megabytes.
     pub size_mb: f64,
+    /// Compression algorithm used.
     pub compression: String,
+    /// True if file contains quads (has a graph column).
     pub quads: bool,
 }
 
+/// Extracts metadata and statistics from a Cottas Parquet file.
+///
+/// # Arguments
+///
+/// * `cottas_file_path` - Path to the Parquet file.
+///
+/// # Returns
+///
+/// * `Ok(CottasInfo)` with file metadata and statistics.
 pub fn info_duckdb(cottas_file_path: &str) -> Result<CottasInfo, Box<dyn Error>> {
     let conn = connection_in_memory();
 
