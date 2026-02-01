@@ -20,6 +20,7 @@ pub use utils::extract_format;
 //! - `export`: Exporting data to Cottas format.
 //! - `parser`: RDF file parsing utilities.
 //! - `utils`: Helper functions.
+//!
 
 /// Converts an RDF file to a Cottas file, using the specified index.
 ///
