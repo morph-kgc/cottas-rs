@@ -274,7 +274,6 @@ fn test_info_real_cottas() {
 
     rdf2_cottas(source_file, target_file, index).unwrap();
 
-    // Call info_duckdb
     let info = info(target_file).unwrap();
 
     assert!(info.triples > 0);
