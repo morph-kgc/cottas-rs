@@ -3,8 +3,6 @@ use polars::prelude::*;
 use std::fs;
 use std::path::Path;
 use tempfile::TempDir;
-use std::process::Command;
-use assert_cmd::Command;
 
 #[test]
 fn test_rdf2cottas() {
