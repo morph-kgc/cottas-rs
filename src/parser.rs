@@ -3,7 +3,9 @@
 use crate::utils::extract_format;
 use oxrdf::{GraphName, Quad};
 use oxrdfio::{RdfFormat, RdfParser};
-use std::io::{BufReader, Error, ErrorKind};
+use std::error::Error;
+use std::io::{BufReader, ErrorKind};
+use std::{io};
 use std::fs::File;
 
 /// Parses an RDF file and returns its contents as a vector of tuples.
@@ -39,7 +41,7 @@ pub fn parse_rdf_file(
         "trig" => RdfFormat::TriG,
         "xml" => RdfFormat::RdfXml,
         _ => {
-            return Err(Box::new(Error::new(
+            return Err(Box::new(io::Error::new(
                 ErrorKind::InvalidData,
                 format!("Unsupported RDF format: {}", format_str),
             )));
