@@ -39,7 +39,7 @@ pub fn parse_rdf_file(
         "trig" => RdfFormat::TriG,
         "xml" => RdfFormat::RdfXml,
         _ => {
-            return Err(Box::new(io::Error::new(
+            return Err(Box::new(Error::new(
                 ErrorKind::InvalidData,
                 format!("Unsupported RDF format: {}", format_str),
             )));
