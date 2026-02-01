@@ -110,7 +110,6 @@ pub fn translate_triple_pattern(cottas_file_path: &str, triple_pattern: &str) ->
     );
 
     // Build WHERE clause - iterate over all positions
-    let mut has_conditions = false;
     for i in 0..tp_tuple.len() {
         let term = &tp_tuple[i];
 
@@ -119,7 +118,6 @@ pub fn translate_triple_pattern(cottas_file_path: &str, triple_pattern: &str) ->
             // Escape single quotes to prevent SQL injection
             let escaped_value = term.replace('\'', "''");
             query.push_str(&format!("{}='{}' AND ", I_POS[i], escaped_value));
-            has_conditions = true;
         }
     }
 
