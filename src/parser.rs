@@ -3,8 +3,7 @@
 use crate::utils::extract_format;
 use oxrdf::{GraphName, Quad};
 use oxrdfio::{RdfFormat, RdfParser};
-use std::error::Error;
-use std::io::{BufReader, ErrorKind};
+use std::io::{BufReader, Error, ErrorKind};
 use std::fs::File;
 
 /// Parses an RDF file and returns its contents as a vector of tuples.
