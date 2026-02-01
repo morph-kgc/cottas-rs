@@ -10,7 +10,7 @@ fn test_rdf2cottas() {
     let target_file = "tests/data/example_2cottas.cottas";
     let index = "spo";
 
-    rdf2cottas(source_file, target_file, index).unwrap();
+    rdf2_cottas(source_file, target_file, index).unwrap();
 
     // Check that target file exists
     assert!(Path::new(target_file).exists());
@@ -23,11 +23,11 @@ fn test_rdf2cottas() {
 }
 
 #[test]
-fn test_cottas2rdf() {
+fn test_cottas2_rdf() {
     let cottas_file = "tests/data/example.cottas";
     let rdf_file = "tests/data/output.rdf";
 
-    cottas2rdf(cottas_file, rdf_file).unwrap();
+    cottas2_rdf(cottas_file, rdf_file).unwrap();
 
     assert!(Path::new(rdf_file).exists());
 
@@ -197,12 +197,7 @@ fn test_cat_invalid_index() {
     let input_files = vec!["tests/data/example.cottas".to_string()];
     let output_file = "tests/data/merged_invalid.cottas";
 
-    let result = cat(
-        &input_files[..],
-        output_file,
-        Some("invalid"),
-        Some(false),
-    );
+    let result = cat(&input_files[..], output_file, Some("invalid"), Some(false));
 
     assert!(result.is_err());
 
@@ -242,13 +237,13 @@ fn test_diff_cottas() {
     let target_file1 = "tests/data/example1.cottas";
     let index = "spo";
 
-    rdf2cottas(source_file1, target_file1, index).unwrap();
+    rdf2_cottas(source_file1, target_file1, index).unwrap();
 
     let source_file2 = "tests/data/example2.ttl";
     let target_file2 = "tests/data/example2.cottas";
     let index = "spo";
 
-    rdf2cottas(source_file2, target_file2, index).unwrap();
+    rdf2_cottas(source_file2, target_file2, index).unwrap();
 
     let file1 = "tests/data/example1.cottas";
     let file2 = "tests/data/example2.cottas";
@@ -269,6 +264,22 @@ fn test_diff_cottas() {
 
     // Cleanup
     fs::remove_file(output_file).ok();
+}
+
+#[test]
+fn test_info_real_cottas() {
+    let source_file = "tests/data/example3.ttl";
+    let target_file = "tests/data/example3.cottas";
+    let index = "spo";
+
+    rdf2_cottas(source_file, target_file, index).unwrap();
+
+    let info = info(target_file).unwrap();
+
+    assert!(info.triples > 0);
+    assert!(info.distinct_subjects > 0);
+    assert!(info.distinct_objects > 0);
+    assert!(info.quads == false);
 }
 
 #[test]

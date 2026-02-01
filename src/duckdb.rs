@@ -4,7 +4,7 @@ pub use crate::parser::*;
 use crate::utils::build_order_by;
 pub use crate::utils::is_valid_index;
 use chrono::{DateTime, Utc};
-use duckdb::{Connection, ToSql};
+use duckdb::{Connection, OptionalExt, ToSql};
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 use std::error::Error;
@@ -374,6 +374,7 @@ pub struct CottasInfo {
 /// # Returns
 ///
 /// * `Ok(CottasInfo)` with file metadata and statistics.
+///
 pub fn info_duckdb(cottas_file_path: &str) -> Result<CottasInfo, Box<dyn Error>> {
     let conn = connection_in_memory();
 
@@ -413,19 +414,38 @@ pub fn info_duckdb(cottas_file_path: &str) -> Result<CottasInfo, Box<dyn Error>>
         cottas_file_path
     );
 
-    // Execute queries and collect results
-    let index: String = conn.query_row(&kv_query, [], |row| {
-        let value: Vec<u8> = row.get(2)?;
-        Ok(String::from_utf8_lossy(&value).to_string())
-    })?;
+    let index: String = conn
+        .query_row(&kv_query, [], |row| {
+            let value: Vec<u8> = row.get(2)?;
+            Ok(String::from_utf8_lossy(&value).to_string())
+        })
+        .optional()?
+        .unwrap_or_else(|| "unknown".to_string());
 
-    let (triples, triples_groups): (i64, i64) =
-        conn.query_row(&row_query, [], |row| Ok((row.get(0)?, row.get(1)?)))?;
+    let (triples, triples_groups): (i64, i64) = conn
+        .query_row(&row_query, [], |row| Ok((row.get(0)?, row.get(1)?)))
+        .optional()?
+        .unwrap_or((0, 0));
 
-    let properties: i64 = conn.query_row(&properties_query, [], |row| row.get(0))?;
-    let distinct_subjects: i64 = conn.query_row(&distinct_subjects_query, [], |row| row.get(0))?;
-    let distinct_objects: i64 = conn.query_row(&distinct_objects_query, [], |row| row.get(0))?;
-    let compression: String = conn.query_row(&compression_query, [], |row| row.get(0))?;
+    let properties: i64 = conn
+        .query_row(&properties_query, [], |row| row.get(0))
+        .optional()?
+        .unwrap_or(0);
+
+    let distinct_subjects: i64 = conn
+        .query_row(&distinct_subjects_query, [], |row| row.get(0))
+        .optional()?
+        .unwrap_or(0);
+
+    let distinct_objects: i64 = conn
+        .query_row(&distinct_objects_query, [], |row| row.get(0))
+        .optional()?
+        .unwrap_or(0);
+
+    let compression: String = conn
+        .query_row(&compression_query, [], |row| row.get(0))
+        .optional()?
+        .unwrap_or_else(|| "unknown".to_string());
 
     // Check if 'g' column exists (quads)
     let mut stmt = conn.prepare(&schema_query)?;

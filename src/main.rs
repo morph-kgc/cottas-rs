@@ -78,14 +78,14 @@ fn main() -> Result<(), Box<dyn Error>> {
             cottas_file_path,
             index,
         } => {
-            rdf2cottas(&rdf_file_path, &cottas_file_path, &index)?;
+            rdf2_cottas(&rdf_file_path, &cottas_file_path, &index)?;
         }
 
         Commands::Cottas2Rdf {
             cottas_file_path,
             rdf_file_path,
         } => {
-            cottas2rdf(&cottas_file_path, &rdf_file_path)?;
+            cottas2_rdf(&cottas_file_path, &rdf_file_path)?;
         }
 
         Commands::Search {

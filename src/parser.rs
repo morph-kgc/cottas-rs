@@ -4,9 +4,9 @@ use crate::utils::extract_format;
 use oxrdf::{GraphName, Quad};
 use oxrdfio::{RdfFormat, RdfParser};
 use std::error::Error;
-use std::io::{BufReader, ErrorKind};
-use std::{io};
 use std::fs::File;
+use std::io;
+use std::io::{BufReader, ErrorKind};
 
 /// Parses an RDF file and returns its contents as a vector of tuples.
 ///
@@ -25,7 +25,6 @@ use std::fs::File;
 pub fn parse_rdf_file(
     path: &str,
 ) -> Result<Vec<(String, String, String, Option<String>)>, Box<dyn Error>> {
-
     // 1. Handle unsupported extension error
     let format_str = extract_format(path).ok_or_else(|| {
         Box::new(io::Error::new(

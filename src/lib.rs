@@ -30,7 +30,7 @@ pub use utils::extract_format;
 ///
 /// # Errors
 /// Returns an error if parsing, loading, or exporting fails.
-pub fn rdf2cottas(
+pub fn rdf2_cottas(
     rdf_file_path: &str,
     cottas_file_path: &str,
     index: &str,
@@ -42,7 +42,6 @@ pub fn rdf2cottas(
     Ok(())
 }
 
-
 /// Converts a Cottas file back to RDF format.
 ///
 /// # Arguments
@@ -51,7 +50,7 @@ pub fn rdf2cottas(
 ///
 /// # Errors
 /// Returns an error if file creation or writing fails.
-pub fn cottas2rdf(cottas_file_path: &str, rdf_file_path: &str) -> Result<(), Box<dyn Error>> {
+pub fn cottas2_rdf(cottas_file_path: &str, rdf_file_path: &str) -> Result<(), Box<dyn Error>> {
     let conn = connection_in_memory();
     let has_named_graph = has_column(&conn, cottas_file_path, "g")?;
     let mut file = File::create(rdf_file_path)?;
