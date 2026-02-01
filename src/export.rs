@@ -14,7 +14,7 @@ use std::io::Write;
 /// * `index` - The index string used for ordering.
 /// * `path` - The output file path.
 /// * `quad_mode` - If true, exports quads; otherwise, exports triples.
-pub fn export_to_cottas(conn: &Connection, index: &str, path: &str, quad_mode: bool) {
+pub fn export_to_cottas(conn: &Connection, index: &str, path: &str, quad_mode: bool) -> Result<(), Box<dyn Error>> {
     let select = if quad_mode {
         "SELECT DISTINCT s, p, o, g FROM quads"
     } else {
@@ -28,7 +28,8 @@ pub fn export_to_cottas(conn: &Connection, index: &str, path: &str, quad_mode: b
         select, order_by, path
     );
 
-    conn.execute(query.as_str(), []).unwrap();
+    conn.execute(query.as_str(), [])?;  // <-- was .unwrap()
+    Ok(())
 }
 
 /// Writes quads or triples from a Cottas (Parquet) file to a text file.

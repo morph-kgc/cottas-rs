@@ -26,18 +26,17 @@ pub fn load_into_duckdb(quads: &[(String, String, String, Option<String>)]) -> C
     conn.execute("CREATE TABLE quads (s TEXT, p TEXT, o TEXT, g TEXT)", [])
         .unwrap();
 
-    // Insert quads directly
+    let mut stmt = conn
+        .prepare("INSERT INTO quads (s, p, o, g) VALUES (?, ?, ?, ?)")
+        .unwrap();
+
     for (s, p, o, g) in quads {
         let g_ref: &dyn ToSql = match g {
             Some(val) => val,
             None => &Option::<String>::None,
         };
 
-        conn.execute(
-            "INSERT INTO quads (s, p, o, g) VALUES (?, ?, ?, ?)",
-            [s as &dyn ToSql, p, o, g_ref],
-        )
-        .unwrap();
+        stmt.execute([s as &dyn ToSql, p, o, g_ref]).unwrap();
     }
 
     conn
@@ -192,8 +191,7 @@ pub fn cat_duckdb(
     remove_input_files: bool,
 ) -> Result<(), Box<dyn Error>> {
     if !is_valid_index(index) {
-        eprintln!("Index `{}` is not valid.", index);
-        return Ok(());
+        return Err(format!("Index `{}` is not valid.", index).into());
     }
 
     // Join file paths for DuckDB PARQUET_SCAN
@@ -258,8 +256,7 @@ pub fn diff_duckdb(
     remove_input_files: bool,
 ) -> Result<(), Box<dyn Error>> {
     if !is_valid_index(index) {
-        eprintln!("Index `{}` is not valid.", index);
-        return Ok(());
+        return Err(format!("Index `{}` is not valid.", index).into());
     }
 
     // Open DuckDB connection
