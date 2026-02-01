@@ -12,7 +12,7 @@
 
 ## Documentation 📚
 
-The documentation for **cottas-rs** can be found **[here](https://docs.rs/cottas-rs)**.
+The documentation for **cottas-rs** can be found **[here](https://docs.rs/cottas-rs/latest/cottas_rs/)**.
 
 ## License 
 
