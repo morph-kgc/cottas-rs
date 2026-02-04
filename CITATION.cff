@@ -1,0 +1,23 @@
+cff-version: "1.2.0"
+message: "If you use this work, please cite it as below."
+title: "COTTAS: Columnar Triple Table Storage for Efficient and Compressed RDF Management"
+type: conference-paper
+authors:
+  - family-names: Arenas-Guerrero
+    given-names: Julián
+  - family-names: Ferrada
+    given-names: Sebastián
+doi: "10.1007/978-3-032-09530-5_18"
+preferred-citation:
+  type: conference-paper
+  title: "COTTAS: Columnar Triple Table Storage for Efficient and Compressed RDF Management"
+  authors:
+    - family-names: Arenas-Guerrero
+      given-names: Julián
+    - family-names: Ferrada
+      given-names: Sebastián
+  year: 2026
+  doi: "10.1007/978-3-032-09530-5_18"
+  conference-name: "International Semantic Web Conference (ISWC 2025)"
+  conference-location: "Nara, Japan"
+  publisher: "Springer Nature Switzerland"
