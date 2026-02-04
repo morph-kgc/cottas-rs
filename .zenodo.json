@@ -1,0 +1,30 @@
+{
+    "license": "Apache-2.0",
+    "keywords": [
+        "Rust",
+        "RDF",
+        "Apache Parquet",
+        "knowledge graph",
+        "data compression"
+    ],
+    "communities": [
+        {
+            "identifier": "linkeddata"
+        },
+        {
+            "identifier": "semantic-web"
+        }
+    ],
+    "creators": [
+      
+        {
+            "affiliation": "Universidad Politécnica de Madrid",
+            "name": "Casanova Marroquin, Stephanya"
+        },
+        {
+            "orcid": "0000-0002-3029-6469",
+            "affiliation": "Universidad Politécnica de Madrid",
+            "name": "Arenas-Guerrero, Julián"
+        }
+    ]
+}
